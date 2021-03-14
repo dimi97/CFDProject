@@ -12,6 +12,7 @@ class myCons:
     x = np.linspace(0,1,nx)
     y = np.linspace(0,1,ny)
     X,Y = np.meshgrid(x,y)
+    
     rho = 1
     visc = 0.1
     dt = 0.001
@@ -21,7 +22,7 @@ class myCons:
     g = 1
     beta = 0.01
     v0= np.zeros(nx)
-    nt=10
+    nt=50
     
     
     

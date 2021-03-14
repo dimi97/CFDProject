@@ -7,28 +7,20 @@ from cfd import cfd
 from misc import misc
 from poisson import poisson
 from graph import graph
-#array of dimensions -1 in every direction consisting of the next elemenent of the centered array.
-
-
-
-    
-#calculate velocity for t+dt. First imput->velocity being calculated.
+  
+#calculate velocity for t+dt. First input->velocity being calculated.
 def vTStep(myVar,u,v,p):
     if myVar=="x":
         u1=u.copy()
-        u2=v.copy()
         
     elif myVar=="y":
         u1=v.copy()
-        u2=u.copy()
         
-        
-    
     u1[1:-1,1:-1]=cfd.centerElementArray(u1)\
         -cfd.centerElementArray(u)*myCons.dt*cfd.BD(u1,"x")\
-        -cfd.centerElementArray(v)*myCons.dt*cfd.BD(u2,"y")\
+        -cfd.centerElementArray(v)*myCons.dt*cfd.BD(u1,"y")\
         -(myCons.dt/(2*myCons.rho))*cfd.CD(p,myVar)\
-        +myCons.visc*myCons.dt*(cfd.SOD(u1,"x")+cfd.SOD(u2,"y"))
+        +myCons.visc*myCons.dt*(cfd.SOD(u1,"x")+cfd.SOD(u1,"y"))
         
     return u1
 
@@ -58,9 +50,9 @@ def TTStep(T,u,v):
 
     
 def flow(u,v,T,p,bArray,nt):
-    T=misc.TInitial(T)
-    u=misc.vInitial(u)
-    v=misc.vInitial(v)
+    # T=misc.TInitial(T)
+    # u=misc.vInitial(u)
+    # v=misc.vInitial(v)
     
     
     
@@ -71,15 +63,18 @@ def flow(u,v,T,p,bArray,nt):
         
         p=poisson.pressure(p, un, vn,bArray)
         u=vTStep("x", un, vn, p)
-        #v=vTStep("y", un, vn, p)
         v=vTStepGravity("y", un, vn, p,Tn)
         T=TTStep(Tn, un, vn)
         
-        flowTest(n,u,v,T,p,bArray)
+        flowPrint(n,u,v,T,p,bArray)
+        
+        T=misc.TInitial(T)
+        u=misc.vInitial(u)
+        v=misc.vInitial(v)
         
     return u,v,p,T
 
-def flowTest(n,u,v,T,p,bArray):
+def flowPrint(n,u,v,T,p,bArray):
     
     print("Time step:",n)
     print("u Array")
@@ -104,30 +99,14 @@ def main():
     bArray=misc.initArray(0)
     T=misc.initArray(myCons.T0)
     
-    nt=myCons.nt
+    nt=500
     u,v,p,T=flow(u,v,T,p,bArray,nt)
     
     graph.graphStuff(T,nt,u,v)
     
+    
+main()
 
-
-def testPoisson():
-    print("hello there poisson test")
-    u=misc.initArray(0)
-    v=misc.initArray(0)
-    p=misc.initArray(0)
-    bArray=misc.initArray(0)
-    T=misc.initArray(myCons.T0)
-    
-    
-    nt=myCons.nt
-    
-    p=poisson.pressure(p, u, v, bArray)
-    
-    graph.plot2D(myCons.x, myCons.y, p)
-    
-#main()
-testPoisson()
 
 
 

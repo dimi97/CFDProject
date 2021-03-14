@@ -3,6 +3,7 @@ import numpy as np
 from myCons import myCons as myCons
 from cfd import cfd
 from misc import misc
+from graph import graph
 
 class poisson:
     
@@ -26,7 +27,7 @@ class poisson:
                     
                     
             p=poisson.pressureBoundary(p)
-           #p=poisson.pressureBoundaryTest(p)
+            #p=poisson.pressureBoundaryTest(p)
             
         return p
         
@@ -77,6 +78,9 @@ class poisson:
             
            
             #TEST the poisson function
+            #before using, change constants to constantsTest and b to test b!
+            #compare results to test.py
+            #change boundary conditions test
            
 # p=poisson.testPoisson()   
 
@@ -97,7 +101,7 @@ class poisson:
 # x  = np.linspace(xmin, xmax, nx)
 # y  = np.linspace(xmin, xmax, ny)
               
-# poisson.plot2D(x,y,p)
+# graph.plot2D(x,y,p)
 # print(p)       
         
         
